@@ -22,8 +22,6 @@ const conversation = watson.conversation({
 const weather = new WeatherAPI(''); // Add app-id from https://openweathermap.org/api
 const wolfram = new WolframAPI(''); // Add app-id from Wolfram Alpha
 
-let wolframQuestion = false;
-
 /******************************************************************************
  * Listen for new commands and output responses
  ******************************************************************************/
@@ -34,13 +32,7 @@ const reader = readline.createInterface({
 });
 
 reader.on('line', function readInput(line) {
-    if (wolframQuestion) {
-        wolfram.getResponse(line, respond);
-        wolframQuestion = false;
-    } else {
-        message(line);
-    }
-
+    message(line);
 });
 
 function respond(text) {
@@ -54,28 +46,14 @@ function respond(text) {
 
 let context = {};
 function message(message) {
-    conversation.message({
-        workspace_id: workspace,
-        input: {'text': message},
-        context: context
-    } , function(err, response) {
-        context = response.context;
-        handleIntent(response.intents[0], response.entities);
-        respond(response.output.text.join('. ') + '.');
-    });
+
 }
 
 function handleIntent(intentObj, entities) {
     switch(intentObj.intent) {
         case 'weather':
-            if (entities[0] && entities[0]['entity'] === 'city') {
-                weather.getWeatherInCity(entities[0]['value'], respond);
-            } else {
-                weather.getWeatherInCity('Oslo', respond);
-            }
             break;
         case 'wolfram':
-            wolframQuestion = true;
             break;
         case 'greeting':
             break;
