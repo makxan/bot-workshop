@@ -37,7 +37,7 @@ reader.on('line', function readInput(line) {
     if (wolframQuestion) {
         wolfram.getResponse(line, respond);
         wolframQuestion = false;
-    } else {git i
+    } else {
         message(line);
     }
 
